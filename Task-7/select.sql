@@ -39,3 +39,21 @@ FROM (
     FROM employees JOIN departments USING (department_id)
 ) t
 WHERE rnk <= 3;
+
+-- Display each employee’s salary along with the previous employee’s salary
+
+SELECT employee_id, first_name, salary,
+       LAG(salary) OVER (ORDER BY salary DESC) AS prev_salary
+FROM employees;
+
+-- Display each employee’s salary along with the next employee’s salary (use LEAD())
+
+SELECT employee_id, first_name, salary,
+       LEAD(salary) OVER (ORDER BY salary DESC) AS next_salary
+FROM employees;
+
+-- Calculate the difference between an employee’s salary and the previous salary in the same department.
+
+SELECT employee_id, first_name, department_id, salary,
+       salary - LAG(salary) OVER (PARTITION BY department_id ORDER BY salary DESC) AS diff
+FROM employees;
